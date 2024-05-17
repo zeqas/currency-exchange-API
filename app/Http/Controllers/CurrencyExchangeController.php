@@ -22,16 +22,34 @@ class CurrencyExchangeController extends Controller
     public function convert(Request $request)
     {
         // 取得參數
-        $source = $request->input('source');
-        $target = $request->input('target');
+        $source = (string) $request->input('source');
+        $target = (string) $request->input('target');
         $amount = $request->input('amount');
 
-        // TODO 驗證參數
-        // source、target 為字串，amount 輸入時無論有無千分位皆可接受。例如「1,525」或「1525」皆可。
+        // 驗證參數
+
+        // source、target 必須為 TWD, JPY, USD 三種貨幣之一
+        if (!$this->currencyExchangeService->isValidCurrency($source) ||        !$this->currencyExchangeService->isValidCurrency($target)) {
+            return response()->json([
+                "message" => "必須為有效的貨幣ISO代碼",
+            ]);
+        }
+
+        // amount 輸入時無論有無千分位皆可接受。例如「1,525」或「1525」皆可。
+        $amountWithoutCommas = str_replace(',', '', $amount);
+
+        if (!is_numeric($amountWithoutCommas)) {
+            return response()->json([
+                "message" => "必須為有效數字",
+            ]);
+        }
 
         // 呼叫 convert 方法
-        $result = $this->currencyExchangeService->convert($source, $target, $amount);
+        $convertedAmount = $this->currencyExchangeService->convert($source, $target, $amountWithoutCommas);
 
-        return $result;
+        return response()->json([
+            "message" => "success",
+            "amount" => $convertedAmount,
+        ]);
     }
 }

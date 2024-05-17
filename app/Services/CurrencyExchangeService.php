@@ -30,6 +30,12 @@ class CurrencyExchangeService
         return $convertedAmount;
     }
 
+    // 驗證貨幣代碼是否有效
+    public function isValidCurrency($currency)
+    {
+        return array_key_exists($currency, $this->currency_rates);
+    }
+
     // TODO 測試案例
     /*
      *  CurrencyExchangeService 必須包含（但不限於）以下測試案例：
