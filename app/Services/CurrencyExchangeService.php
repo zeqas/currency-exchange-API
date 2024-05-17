@@ -2,30 +2,16 @@
 
 namespace App\Services;
 
+use App\Models\enum\CurrencyRate;
+
 class CurrencyExchangeService
 {
     private $currency_rates;
 
-    // 靜態匯率表，只有 TWD, JPY, USD 三種貨幣
-    public function __construct()
+    // 注入 CurrencyRate
+    public function __construct(CurrencyRate $currencyRate)
     {
-        $this->currency_rates = [
-            'TWD' => [
-                'TWD' => 1,
-                'JPY' => 3.669,
-                'USD' => 0.03281,
-            ],
-            'JPY' => [
-                'TWD' => 0.26956,
-                'JPY' => 1,
-                'USD' => 0.00885,
-            ],
-            'USD' => [
-                'TWD' => 30.444,
-                'JPY' => 111.801,
-                'USD' => 1,
-            ],
-        ];
+        $this->currency_rates = $currencyRate->getCurrencyRates();
     }
 
     // 匯率轉換
