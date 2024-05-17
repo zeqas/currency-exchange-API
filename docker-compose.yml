@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+    app:
+        container_name: currency-exchage-api
+        build: .
+        volumes:
+            - ./:/var/www/html
+        working_dir: /var/www/html
+        command: php artisan serve --host=0.0.0.0 --port=8000
+        ports:
+            - "8000:8000"
+            - "9001:9000"
+    db:
+        image: mysql:8-oracle
+        platform: linux/amd64
+        environment:
+            MYSQL_DATABASE: docker_db
+            MYSQL_ROOT_PASSWORD: 1Qaz2Wsx
+        ports:
+            - "3309:3306"
+    webserver:
+        image: nginx:alpine
+        volumes:
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./:/var/www/html
+        ports:
+            - "8080:80"
+        depends_on:
+            - app
