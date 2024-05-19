@@ -97,8 +97,6 @@ jobs:
         run: cp .env.example .env
       - name: Generate Key
         run: php artisan key:generate
-      - name: Migrate Database
-        run: php artisan migrate
       - name: 執行測試
         run: |
           XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html html-coverage/
