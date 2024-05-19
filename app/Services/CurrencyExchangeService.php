@@ -35,9 +35,14 @@ class CurrencyExchangeService
             ]);
         }
 
-        $rawConvertedAmount = $amountWithoutCommas * $this->currency_rates[$source][$target];
-        // 四捨五入到小數點第二位
+        // 將 amount 四捨五入到小數點第二位再進行轉換
+        $roundedAmount = round($amountWithoutCommas, 2);
+
+        $rawConvertedAmount = $roundedAmount * $this->currency_rates[$source][$target];
+
+        // 將 convertedAmount 四捨五入到小數點第二位
         $roundedConvertedAmount = round($rawConvertedAmount, 2);
+
         // 加上半形逗點作為千分位表示，每三個位數一點
         // ex. 1234567.89 -> 1,234,567.89
         $convertedAmount = number_format($roundedConvertedAmount, 2, '.', ',');
