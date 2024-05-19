@@ -40,4 +40,18 @@ class CurrencyExchangeServiceTest extends TestCase
         $convertedAmount = $response->getData(true);
         $this->assertEquals('必須為有效數字', $convertedAmount['message']);
     }
+
+    // convertedAmount 大於1000以上的數字加上半形逗點作為千分位表示，每三個位數一點
+    public function testConvertHandlesCommaSeparatedInput()
+    {
+        $convertedAmount = $this->service->convert('USD', 'JPY', '1,525,000');
+        $this->assertEquals('170,496,525.00', $convertedAmount);
+    }
+
+    // Amount & convertedAmount 小數點第二位以後會被四捨五入
+    public function testRoundToTwoDecimalPlaces()
+    {
+        $convertedAmount = $this->service->convert('JPY', 'USD', 123.678);
+        $this->assertEquals('1.10', $convertedAmount);
+    }
 }

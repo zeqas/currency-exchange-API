@@ -38,10 +38,17 @@ class CurrencyExchangeService
         // 將 amount 四捨五入到小數點第二位再進行轉換
         $roundedAmount = round($amountWithoutCommas, 2);
 
-        $rawConvertedAmount = $roundedAmount * $this->currency_rates[$source][$target];
+        $targetRate = $this->currency_rates[$source][$target];
+
+        // 先用 bcmul 避免浮點數計算誤差
+        // FIXME 發現用 bcmul 也無法處理精度問題
+        $rawConvertedAmount = bcmul((string) $roundedAmount, (string) $targetRate, 4);
 
         // 將 convertedAmount 四捨五入到小數點第二位
-        $roundedConvertedAmount = round($rawConvertedAmount, 2);
+        // ex. 1.0945 -> 109.45 -> 109.5 -> 1.095
+        $ceiledAmount = ceil($rawConvertedAmount * 100) / 100;
+
+        $roundedConvertedAmount = round($ceiledAmount, 2);
 
         // 加上半形逗點作為千分位表示，每三個位數一點
         // ex. 1234567.89 -> 1,234,567.89
