@@ -5,6 +5,7 @@
 ## 環境要求
 
 -   PHP >= 8.2
+-   Laravel 10.48.10
 -   Composer
 -   MySQL
 -   Docker
