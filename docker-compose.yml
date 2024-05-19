@@ -1,7 +1,7 @@
 version: "3.7"
 services:
     app:
-        container_name: currency-exchage-api
+        container_name: currency-exchange-api
         build: .
         volumes:
             - ./:/var/www/html
