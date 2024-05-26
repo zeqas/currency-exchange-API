@@ -21,18 +21,14 @@ class CurrencyExchangeService
 
         // source、target 必須為 TWD, JPY, USD 三種貨幣之一
         if (!$this->isValidCurrency($source) || !$this->isValidCurrency($target)) {
-            return response()->json([
-                "message" => "必須為有效的貨幣ISO代碼",
-            ]);
+            throw new \InvalidArgumentException('必須為有效的貨幣ISO代碼');
         }
 
         // amount 輸入時無論有無千分位皆可接受。例如「1,525」或「1525」皆可。
         $amountWithoutCommas = str_replace(',', '', $amount);
 
         if (!is_numeric($amountWithoutCommas)) {
-            return response()->json([
-                "message" => "必須為有效數字",
-            ]);
+            throw new \InvalidArgumentException('必須為有效數字');
         }
 
         // 將 amount 四捨五入到小數點第二位再進行轉換

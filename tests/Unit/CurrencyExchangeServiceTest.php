@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Models\enum\CurrencyRate;
 use Tests\TestCase;
 use App\Services\CurrencyExchangeService;
+use InvalidArgumentException;
 
 class CurrencyExchangeServiceTest extends TestCase
 {
@@ -20,25 +21,25 @@ class CurrencyExchangeServiceTest extends TestCase
     // Source 不符合 TWD, JPY, USD 三種貨幣之一
     public function testInvalidSourceCurrency()
     {
-        $response = $this->service->convert('RMB', 'USD', 100);
-        $convertedAmount = $response->getData(true);
-        $this->assertEquals('必須為有效的貨幣ISO代碼', $convertedAmount['message']);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('必須為有效的貨幣ISO代碼');
+        $this->service->convert('RMB', 'USD', 100);
     }
 
     // Target 不符合 TWD, JPY, USD 三種貨幣之一
     public function testInvalidTargetCurrency()
     {
-        $response = $this->service->convert('USD', 'RMB', 100);
-        $convertedAmount = $response->getData(true);
-        $this->assertEquals('必須為有效的貨幣ISO代碼', $convertedAmount['message']);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('必須為有效的貨幣ISO代碼');
+        $this->service->convert('USD', 'RMB', 100);
     }
 
     // Amount 不是有效數字
     public function testInvalidAmount()
     {
-        $response = $this->service->convert('USD', 'JPY', 'invalid_amount無效數字');
-        $convertedAmount = $response->getData(true);
-        $this->assertEquals('必須為有效數字', $convertedAmount['message']);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('必須為有效數字');
+        $this->service->convert('USD', 'JPY', 'invalid_amount無效數字');
     }
 
     // convertedAmount 大於1000以上的數字加上半形逗點作為千分位表示，每三個位數一點

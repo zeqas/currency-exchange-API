@@ -27,11 +27,17 @@ class CurrencyExchangeController extends Controller
         $amount = $request->input('amount');
 
         // 呼叫 convert 方法
-        $convertedAmount = $this->currencyExchangeService->convert($source, $target, $amount);
+        try {
+            $convertedAmount = $this->currencyExchangeService->convert($source, $target, $amount);
 
-        return response()->json([
-            "message" => "success",
-            "amount" => $convertedAmount,
-        ]);
+            return response()->json([
+                "message" => "success",
+                "amount" => $convertedAmount,
+            ], 200);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                "message" => $e->getMessage(),
+            ], 400);
+        }
     }
 }
